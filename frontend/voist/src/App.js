@@ -25,7 +25,6 @@ function App() {
         option
       );
       const resJson = await response.json();
-      console.log(resJson.items);
       setPlaylist(resJson.items);
     };
     fetchPlaylist();

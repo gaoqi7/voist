@@ -1,10 +1,28 @@
 require("dotenv").config();
+require("firebase/database");
+const firebase = require("firebase/app");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3300;
+app.use(cors());
+// Setup express app to handle data parsing
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 const request = require("request");
 const bufferFrom = require("buffer-from");
-
+const firebaseConfig = {
+  apiKey: "AIzaSyDOxTtEvEitywMgv5qLST7O5dlC5dfb7L8",
+  authDomain: "voist-3b822.firebaseapp.com",
+  databaseURL: "https://voist-3b822.firebaseio.com",
+  projectId: "voist-3b822",
+  storageBucket: "voist-3b822.appspot.com",
+  messagingSenderId: "776071379957",
+  appId: "1:776071379957:web:8daafba54054045df03ebc",
+  measurementId: "G-H3LXYVEF8Y"
+};
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 app.get("/login", function(req, res) {
   const scopes =
     "playlist-modify-public user-read-currently-playing playlist-modify-private";
@@ -41,6 +59,7 @@ app.get("/callback", function(req, res) {
     let refresh_token = JSON.parse(body).refresh_token;
     let token_type = JSON.parse(body).token_type;
     let uri = process.env.FRONTEND_URI || "http://localhost:3000";
+    database.ref().set({ token: { access_token, refresh_token, token_type } });
     res.redirect(
       uri +
         "?access_token=" +
@@ -51,6 +70,14 @@ app.get("/callback", function(req, res) {
         token_type
     );
   });
+});
+
+app.post("/playlist", function(req, res) {
+  const tracksInfo = req.body.data.map(el => {
+    return { name: el.track.name, id: el.track.id };
+  });
+  console.log(tracksInfo);
+  res.send("test");
 });
 
 app.listen(PORT, () => {

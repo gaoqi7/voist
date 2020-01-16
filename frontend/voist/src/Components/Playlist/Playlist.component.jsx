@@ -3,7 +3,7 @@ import { Song } from "../Song/Song.component";
 export const Playlist = props => {
   const [isClicked, setIsClicked] = useState(false);
   const [trackList, setTrackList] = useState([]);
-  useEffect(() => console.log(trackList), [trackList]);
+  useEffect(() => console.log(trackList.length), [trackList]);
   const handleClick = e => {
     setIsClicked({ isClicked: true });
     const fetchTracks = async () => {
@@ -19,6 +19,11 @@ export const Playlist = props => {
         }
       );
       const resJson = await response.json();
+      await fetch("http://localhost:3300/playlist", {
+        method: "POST",
+        body: JSON.stringify({ data: resJson.items }),
+        headers: { "Content-Type": "application/json" }
+      });
       setTrackList(resJson.items);
     };
     fetchTracks();
