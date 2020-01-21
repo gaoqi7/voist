@@ -23,6 +23,31 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+
+const tokenInfo = {};
+
+function autoUpdateToken() {
+  let option = {
+    url: "https://accounts.spotify.com/api/token",
+    form: {
+      grant_type: "refresh_token",
+      refresh_token: tokenInfo.refresh_token
+    },
+    headers: {
+      Authorization:
+        "Basic " +
+        bufferFrom(
+          process.env.CLIENT_ID + ":" + process.env.CLIENT_SECRET
+        ).toString("base64"),
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  };
+  request.post(option, function(error, request, body) {
+    tokenInfo.access_token = JSON.parse(body).access_token;
+    database.ref("token").update({ access_token: tokenInfo.access_token });
+  });
+}
+
 app.get("/login", function(req, res) {
   const scopes =
     "playlist-modify-public user-read-currently-playing playlist-modify-private";
@@ -55,28 +80,37 @@ app.get("/callback", function(req, res) {
   };
   request.post(option, function(error, response, body) {
     console.log(JSON.parse(body).access_token);
-    let access_token = JSON.parse(body).access_token;
-    let refresh_token = JSON.parse(body).refresh_token;
-    let token_type = JSON.parse(body).token_type;
+    tokenInfo.access_token = JSON.parse(body).access_token;
+    tokenInfo.refresh_token = JSON.parse(body).refresh_token;
+    tokenInfo.token_type = JSON.parse(body).token_type;
+    tokenInfo.expires_in = JSON.parse(body).expires_in;
+    tokenInfo.scope = JSON.parse(body).scope;
+    console.log("this is the init token!!!!");
+    console.log(tokenInfo);
     let uri = process.env.FRONTEND_URI || "http://localhost:3000";
-    database.ref().set({ token: { access_token, refresh_token, token_type } });
+    database.ref("token").set(tokenInfo);
     res.redirect(
       uri +
         "?access_token=" +
-        access_token +
+        tokenInfo.access_token +
         "&refresh_token=" +
-        refresh_token +
+        tokenInfo.refresh_token +
         "&token_type=" +
-        token_type
+        tokenInfo.token_type
     );
   });
+  setInterval(autoUpdateToken, 3590000);
 });
 
 app.post("/playlist", function(req, res) {
   const tracksInfo = req.body.data.map(el => {
-    return { name: el.track.name, id: el.track.id };
+    return {
+      name: el.track.name,
+      id: el.track.id
+    };
   });
   console.log(tracksInfo);
+  database.ref("tracks").set(tracksInfo);
   res.send("test");
 });
 
