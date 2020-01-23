@@ -11,4 +11,4 @@ Voist is an app initially designed for party use. the voist name is comming from
   - MVC framework
   - `List` data structure in JavaScript
 - Deeper understanding the ExpressJS framework
-  - the Magic of the middleware
+  - the magic of the middleware

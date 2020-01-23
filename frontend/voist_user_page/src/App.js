@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React from "react";
+import { Search } from "./Components/Search.component";
+import * as firebase from "firebase/app";
+import "firebase/database";
+import { useList } from "react-firebase-hooks/database";
+const firebaseConfig = {
+  apiKey: "AIzaSyDOxTtEvEitywMgv5qLST7O5dlC5dfb7L8",
+  authDomain: "voist-3b822.firebaseapp.com",
+  databaseURL: "https://voist-3b822.firebaseio.com",
+  projectId: "voist-3b822",
+  storageBucket: "voist-3b822.appspot.com",
+  messagingSenderId: "776071379957",
+  appId: "1:776071379957:web:8daafba54054045df03ebc",
+  measurementId: "G-H3LXYVEF8Y"
+};
+firebase.initializeApp(firebaseConfig);
+export const database = firebase.database();
 function App() {
+  const [trackList] = useList(database.ref("tracks"));
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Search />
+      <ul className="tracklist">
+        {trackList.map(el => (
+          <li className="track" key={el.val().id} id={el.val().id}>
+            {el.val().name}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
