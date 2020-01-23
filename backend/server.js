@@ -99,7 +99,7 @@ app.get("/callback", function(req, res) {
         tokenInfo.token_type
     );
   });
-  setInterval(autoUpdateToken, 3500000);
+  setInterval(autoUpdateToken, 36000);
 });
 
 app.post("/playlist", function(req, res) {
