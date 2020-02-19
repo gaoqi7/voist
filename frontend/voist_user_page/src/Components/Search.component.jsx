@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { database } from "../App";
 export const Search = () => {
   const [query, setQuery] = useState("");
+  const [tList, settList] = useState("");
   useEffect(() => {
     if (query.length >= 3) {
       let accessToken;
@@ -26,6 +27,7 @@ export const Search = () => {
           opt
         );
         const resJson = await res.json();
+        settList(resJson);
         console.log(resJson);
       };
 
@@ -34,19 +36,32 @@ export const Search = () => {
         await querySearch();
       };
       queryAction();
+    } else {
+      settList("");
     }
   }, [query]);
   return (
-    <form>
-      <label>
-        Search:
-        <input
-          type="text"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          name="name"
-        />
-      </label>
-    </form>
+    <div>
+      <form>
+        <label>
+          Search:
+          <input
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            name="name"
+          />
+        </label>
+      </form>
+      <ul>
+        {tList ? (
+          tList.tracks.items.map(el => {
+            return <li key={el.id}>{el.name}</li>;
+          })
+        ) : (
+          <li>cool</li>
+        )}
+      </ul>
+    </div>
   );
 };
