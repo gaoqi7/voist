@@ -5,6 +5,7 @@ export const Playlist = props => {
   const [trackList, setTrackList] = useState([]);
   useEffect(() => console.log(trackList.length), [trackList]);
   const handleClick = e => {
+    let plID = e.target.getAttribute("pl_id");
     setIsClicked({ isClicked: true });
     const fetchTracks = async () => {
       const response = await fetch(
@@ -21,7 +22,7 @@ export const Playlist = props => {
       const resJson = await response.json();
       await fetch("http://localhost:3300/playlist", {
         method: "POST",
-        body: JSON.stringify({ data: resJson.items }),
+        body: JSON.stringify({ data: resJson.items, pl_id: plID }),
         headers: { "Content-Type": "application/json" }
       });
       setTrackList(resJson.items);

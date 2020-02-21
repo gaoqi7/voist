@@ -16,6 +16,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 export const database = firebase.database();
 function App() {
+  // Use local storage to store the playlist id which can be reused as modify playlist required
+  database
+    .ref("playlistID")
+    .once("value")
+    .then(snapshot => {
+      localStorage.setItem("spotifyplaylistid", snapshot.val());
+    });
   const [trackList] = useList(database.ref("tracks"));
   return (
     <div>

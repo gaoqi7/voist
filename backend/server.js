@@ -111,6 +111,7 @@ app.post("/playlist", function(req, res) {
   });
   console.log(tracksInfo);
   database.ref("tracks").set(tracksInfo);
+  database.ref("playlistID").set(req.body.pl_id);
   res.send("test");
 });
 
