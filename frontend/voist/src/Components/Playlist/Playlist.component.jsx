@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Song } from "../Song/Song.component";
 export const Playlist = props => {
   const [isClicked, setIsClicked] = useState(false);
   const [trackList, setTrackList] = useState([]);
-  useEffect(() => console.log(trackList.length), [trackList]);
+  // useEffect(() => console.log(trackList.length), [trackList]);
   const handleClick = e => {
     let plID = e.target.getAttribute("pl_id");
     setIsClicked({ isClicked: true });
