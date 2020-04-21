@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import { Song } from "../Song/Song.component";
+
 export const Playlist = props => {
   const [isClicked, setIsClicked] = useState(false);
   const [trackList, setTrackList] = useState([]);
-  // useEffect(() => console.log(trackList.length), [trackList]);
+  useEffect(() => console.log(trackList.length), [trackList]);
   const handleClick = e => {
     let plID = e.target.getAttribute("pl_id");
     setIsClicked({ isClicked: true });
@@ -33,12 +35,7 @@ export const Playlist = props => {
     <div>
       {isClicked === false &&
         props.playlistContent.map(pl => (
-          <button
-            onClick={handleClick}
-            className="playlistBtn"
-            key={pl.id}
-            pl_id={pl.id}
-          >
+          <button onClick={handleClick} key={pl.id} pl_id={pl.id}>
             {pl.name}
           </button>
         ))}

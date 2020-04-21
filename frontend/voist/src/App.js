@@ -10,8 +10,6 @@ const tokenInfo = {
 };
 function App() {
   const [playlist, setPlaylist] = useState([]);
-  // const [tokens, setTokens] = useState(tokenInfo);
-  // Fetch the Playlist
   useEffect(() => {
     const option = {
       headers: {
